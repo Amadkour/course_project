@@ -68,30 +68,47 @@ class HomeView extends StatelessWidget {
                 PostCubit controller = context.read<PostCubit>();
                 return Flexible(
                   child: ListView(
-                    children: controller.posts
-                        .map(
-                          (e) => InkWell(
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(vertical: 10),
-                              padding: EdgeInsets.all(controller.postPadding),
-                              decoration: BoxDecoration(
-                                color: Colors.orange,
-                                border: Border.all(color: Colors.black),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(e),
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: TextField(
+                              controller: controller.postTextController,
                             ),
-                            onTap: () {
-                              controller.changePostPadding();
-                            },
                           ),
-                        )
-                        .toList(),
+                          TextButton(onPressed: controller.insertPost, child: const Text('ADD'))
+                        ],
+                      ),
+                      ...controller.posts
+                          .map(
+                            (e) => InkWell(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            padding: EdgeInsets.all(controller.postPadding),
+                            decoration: BoxDecoration(
+                              color: Colors.orange,
+                              border: Border.all(color: Colors.black),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(e),
+                          ),
+                          onTap: () {
+                            controller.changePostPadding();
+                          },
+                        ),
+                      )
+                          .toList(),
+
+
+                    ],
                   ),
                 );
               },
             ),
-          )
+          ),
+          ///----------------new Post
+
+
         ],
       ),
     );

@@ -1,24 +1,20 @@
 import 'package:course_project/modules/home/controller/post_controller/post_states.dart';
+import 'package:course_project/modules/home/provider/database/post_db.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostCubit extends Cubit<PostState>{
-  PostCubit():super(PostClosedState());
+  PostCubit():super(PostClosedState()){
+    readPosts();
+  }
 
+  TextEditingController postTextController=TextEditingController();
 
+  ///-----------database class
+  PostDB db=PostDB();
 
   ///----------------posts list------------///
-  List<String> posts=[
-    'post 1 from Flutter Course',
-    'post 2 from Flutter Course',
-    'post 3 from Flutter Course',
-    'post 4 from Flutter Course',
-    'post 5 from Flutter Course',
-    'post 6 from Flutter Course',
-    'post 7 from Flutter Course',
-    'post 8 from Flutter Course',
-    'post 9 from Flutter Course',
-    'post 10 from Flutter Course',
-  ];
+  List<String> posts=[];
   double postPadding=10;
 
   void changePostPadding(){
@@ -30,6 +26,21 @@ class PostCubit extends Cubit<PostState>{
       postPadding=10;
       emit(PostClosedState());
     }
+
+  }
+
+  insertPost(){
+    ///----------------insert----------------///
+    db.insertPost(postTextController.text);
+    postTextController.text='';
+    emit(PostIncreasedState());
+    ///-----------------reload---------------///
+    readPosts();
+  }
+
+  readPosts() async {
+   posts= (await db.readPosts()).map((e) =>e['name'].toString()).toList();
+   emit(PostLoadedState());
 
   }
 
